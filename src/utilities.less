@@ -1,0 +1,163 @@
+@displays: flex, grid, block, none, inline, inline-block;
+each(@displays, {
+  .@{value} {
+    display: @value;
+  }
+});
+
+@fontStyles: italic, normal;
+each(@fontStyles, {
+  .@{value} {
+    font-style: @value;
+  }
+});
+
+@textAligns: left, right, center, justify, initial, inherit;
+each(@textAligns, {
+  .text-@{value} {
+    text-align: @value;
+  }
+});
+
+@fontWeight: normal, bold, initial, 100, 200, 300, 400, 500, 600, 700, 800, 900;
+each(@fontWeight, {
+  .font-@{value} {
+    font-weight: @value;
+  }
+});
+
+@atomSpacing: 0.25rem;
+@iterations: 12;
+.gaps() {
+  m: margin;
+  p: padding;
+}
+.directions() {
+  l: left;
+  r: right;
+  t: top;
+  b: bottom;
+  // a: all;
+  // y: vertical;
+  // x: horizontal;
+};
+
+each(.gaps(), .(@gapValue, @gapKey, @gapIndex) {
+  each(.directions(), .(@directionValue, @directionKey, @directionIndex) {
+    each(range(@iterations), {
+      .@{gapKey}@{directionKey}-@{value} {
+        @{gapValue}-@{directionValue}: @atomSpacing * @value;
+      }
+    })
+  })
+})
+
+each(range(@iterations), {
+  .m-@{value} {
+    margin: @atomSpacing * @value;
+  }
+  .mx-@{value} {
+    margin-left: @atomSpacing * @value;
+    margin-right: @atomSpacing * @value;
+  }
+  .my-@{value} {
+    margin-top: @atomSpacing * @value;
+    margin-bottom: @atomSpacing * @value;
+  }
+  .p-@{value} {
+    padding: @atomSpacing * @value;
+  }
+  .px-@{value} {
+    padding-left: @atomSpacing * @value;
+    padding-right: @atomSpacing * @value;
+  }
+  .py-@{value} {
+    padding-top: @atomSpacing * @value;
+    padding-bottom: @atomSpacing * @value;
+  }
+})
+
+.justifyContent() {
+  start: start;
+  end: end;
+  center: center;
+  around: space-around;
+  evenly: space-evenly;
+  between: space-between;
+}
+each(.justifyContent(), .(@value, @key, @index) {
+  .justify-@{key} {
+    justify-content: @value;
+  }
+})
+
+.alignItems() {
+  start: flex-start;
+  end: flex-end;
+  center: center;
+  baseline: baseline;
+  stretch: stretch;
+}
+each(.alignItems(), .(@value, @key, @index) {
+  .items-@{key} {
+    align-items: @value;
+  }
+})
+
+.width() {
+  0: 0px;
+  px: 1px;
+  screen: 100vw;
+  full: 100%;
+  min: min-content;
+  max: max-content;
+  fit: fit-content;
+  // 0.5: 0.125rem;
+  // 1: 0.25rem;
+  // 1.5: 0.375rem;
+  // 2: 0.5rem;
+  // 2.5: 0.625rem;
+  // 3: 0.75rem;
+  // 3.5: 0.875rem;
+  // 4: 1rem;
+}
+each(.width(), .(@value, @key, @index) {
+  .w-@{key} {
+    width: @value;
+  }
+})
+
+.height() {
+  0: 0px;
+  px: 1px;
+  screen: 100vh;
+  full: 100%;
+  min: min-content;
+  max: max-content;
+  fit: fit-content;
+  // 0.5: 0.125rem;
+  // 1: 0.25rem;
+  // 1.5: 0.375rem;
+  // 2: 0.5rem;
+  // 2.5: 0.625rem;
+  // 3: 0.75rem;
+  // 3.5: 0.875rem;
+  // 4: 1rem;
+}
+each(.height(), .(@value, @key, @index) {
+  .h-@{key} {
+    height: @value;
+  }
+})
+
+.placeItems() {
+  start: start;
+  end: end;
+  center: center;
+  stretch: stretch;
+}
+each(.placeItems(), .(@value, @key, @index) {
+  .place-items-@{key} {
+    place-items: @value;
+  }
+})
