@@ -1,7 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { combineReducers, Reducer, AnyAction } from 'redux';
+import { Reducer } from 'redux';
 import { loggerMiddleware } from './middleware/loggerMiddleware';
 
 import counter from './slices/counter';
@@ -16,7 +16,7 @@ const combinedReducer = combineReducers<typeof reducers>(reducers);
 
 export type RootState = ReturnType<typeof combinedReducer>;
 
-export const rootReducer: Reducer<RootState> = (state, action: AnyAction) => {
+export const rootReducer: Reducer<RootState> = (state, action) => {
   return combinedReducer(state, action);
 };
 
