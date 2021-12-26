@@ -1,16 +1,23 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
+import Logger from '@/utils/logger';
+
+const wsLogger = new Logger('Websocket')
 
 export const voiceApi = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: '/' }),
+  reducerPath: 'voiceApi',
+  baseQuery: retry(
+    fetchBaseQuery({ baseUrl: '/' }),
+    { maxRetries: 5 }
+  ),
   endpoints: (build) => ({
-    getMessages: build.query({
+    getVoice: build.query({
       query: () => `/tts_api`,
       async onCacheEntryAdded(
-        arg,
+        arg: { voice: string, paragraph: string },
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
         // create a websocket connection when the cache subscription starts
-        const ws = new WebSocket(import.meta.env.WEBSOCKET_URL)
+        const ws = new WebSocket("ws://125.214.0.120:81")
         try {
           // wait for the initial query to resolve before proceeding
           await cacheDataLoaded
@@ -19,11 +26,37 @@ export const voiceApi = createApi({
           // if it is a message and for the appropriate channel,
           // update our query result with the received message
           const listener = (event: MessageEvent) => {
-            // const data = JSON.parse(event.data)
-            console.log('event -> ', event)
+            const data = JSON.parse(event.data)
+            wsLogger.log('event -> ', event)
+
+            updateCachedData((draft) => {
+              draft.push(data)
+            })
           }
 
-          ws.addEventListener('message', listener)
+          const onOpenWs = () => {
+            wsLogger.log('Opening a connection...');
+            const msg = {
+              'text': arg.paragraph,
+              'speed': 1.0,
+              'voice': arg.voice,
+              'full_mp3': 1,
+            }
+            ws.send(JSON.stringify(msg))
+          }
+
+          const onCloseWs = () => {
+            wsLogger.log('Close connection!');
+          }
+
+          const onErrorWs = (evt: any) => {
+            wsLogger.error(evt);
+          }
+
+          ws.addEventListener('close', onCloseWs);
+          ws.addEventListener('error', onErrorWs);
+          ws.addEventListener('message', listener);
+          ws.addEventListener('open', onOpenWs);
         } catch {
           // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
           // in which case `cacheDataLoaded` will throw
@@ -37,4 +70,4 @@ export const voiceApi = createApi({
   }),
 })
 
-export const { useGetMessagesQuery } = voiceApi
+export const { useLazyGetVoiceQuery } = voiceApi

@@ -12,6 +12,7 @@ const themeVariables = lessToJS(
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './',
   plugins: [react(), tsconfigPaths()],
   css: {
     preprocessorOptions: {
@@ -21,4 +22,13 @@ export default defineConfig({
       },
     },
   },
+  // server: {
+  //   fs: {
+  //     // Allow serving files from one level up to the project root
+  //     allow: ['..']
+  //   },
+  //   proxy: {
+  //     '/api': 'ws://125.214.0.120:81'
+  //   }
+  // },
 })

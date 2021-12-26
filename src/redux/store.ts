@@ -1,13 +1,15 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers, Reducer, AnyAction } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { Reducer } from 'redux';
 import { loggerMiddleware } from './middleware/loggerMiddleware';
 
 import counter from './slices/counter';
 
+import { voiceApi } from './services/voice';
+
 const reducers = {
-  counter
+  counter,
+  [voiceApi.reducerPath]: voiceApi.reducer,
   // Add the generated reducer as a specific top-level slice
   // [authApi.reducerPath]: authApi.reducer,
 };
@@ -26,6 +28,7 @@ export const store = configureStore({
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
+      voiceApi.middleware,
       loggerMiddleware
     ]),
 });
