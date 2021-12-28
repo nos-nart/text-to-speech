@@ -35,6 +35,7 @@ export default class Logger {
   }
 
   private canPrint(type: LoggerLevel) {
+    // @ts-ignore
     if (import.meta.env.MODE === 'development') {
       return this.map[this.level] <= (this.map[type] || 2);
     }
