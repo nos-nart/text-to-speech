@@ -7,12 +7,16 @@ import { useLazyGetVoiceQuery } from '@/redux/services/voice';
 function App() {
   const [paragraph, setParagraph] = useState<string>('Tuyên ngôn độc lập văn kiện có ý nghĩa lịch sử sống còn với vận mệnh dân tộc.');
   const [voice, setVoice] = useState('north_female_lien');
+
+  // @ref: https://redux-toolkit.js.org/rtk-query/api/created-api/hooks#uselazyquery
   const [trigger, result, lastPromiseInfo] = useLazyGetVoiceQuery()
 
-  console.log('xxx ~> ', import.meta.env)
-
   const onListen = () => {
-    trigger({ voice, paragraph })
+    trigger({ voice, paragraph, action: 'listen' })
+  }
+  
+  const onDownload = () => {
+    trigger({ voice, paragraph, action: 'download' })
   }
 
   return (
@@ -36,7 +40,7 @@ function App() {
             <Col className="mt-3">
               <Space>
                 <Button onClick={onListen} type="primary" icon={<PauseOutlined /> }>Nghe</Button>
-                <Button icon={<CloudDownloadOutlined /> }>Tải xuống</Button>
+                <Button onClick={onDownload} icon={<CloudDownloadOutlined /> }>Tải xuống</Button>
               </Space>
             </Col>
           </Row>
